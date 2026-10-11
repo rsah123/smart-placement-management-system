@@ -118,3 +118,11 @@ Sensitive configuration such as the Django secret key is stored using environmen
 ## Author
 
 Ranjan Kumar
+
+## Live Demo
+
+Live Application:
+
+https://smart-placement-management-system-6npx.onrender.com/
+
+> Note: The free Render instance may take around 30-60 seconds to wake up after inactivity.
