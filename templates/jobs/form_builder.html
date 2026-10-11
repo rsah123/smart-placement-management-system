@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dynamic Application Form Builder | SmartPMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: #10233f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 18px;
+        }
+
+        .brand {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #dce6f5;
+            text-decoration: none;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar .active {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .card-box {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+
+        .field-item {
+            border: 1px solid #e4e8ef;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .badge-required {
+            background: #fde2e2;
+            color: #b42318;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                margin-left: 190px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<div class="sidebar">
+
+    <div class="brand">
+        🎓 SmartPMS Admin
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}">
+        Dashboard
+    </a>
+
+    <a
+        href="{% url 'job_list' %}"
+        class="active"
+    >
+        Job Drives
+    </a>
+
+    <a href="{% url 'manage_applications' %}">
+        Applications
+    </a>
+
+    <a href="/admin/">
+        Django Admin
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+
+
+<div class="main">
+
+
+    <div class="topbar">
+
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+            "
+        >
+
+            <div>
+
+                <h3 class="mb-1">
+                    Dynamic Application Form Builder
+                </h3>
+
+                <div class="text-muted">
+                    {{ job.company.name }} — {{ job.title }}
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'job_list' %}"
+                class="btn btn-outline-secondary"
+            >
+                Back to Job Drives
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div
+                class="
+                    alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% elif message.tags == 'warning' %}
+                        alert-warning
+                    {% elif message.tags == 'success' %}
+                        alert-success
+                    {% else %}
+                        alert-info
+                    {% endif %}
+                "
+            >
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <div class="row g-4">
+
+
+        <div class="col-lg-5">
+
+            <div class="card-box">
+
+                <h4 class="mb-3">
+                    Add Form Field
+                </h4>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Field Label
+                        </label>
+
+                        {{ form.label }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Field Name
+                        </label>
+
+                        {{ form.field_name }}
+
+                        <small class="text-muted">
+                            Example: tenth_percentage
+                        </small>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Field Type
+                        </label>
+
+                        {{ form.field_type }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Dropdown Options
+                        </label>
+
+                        {{ form.options }}
+
+                        <small class="text-muted">
+                            Example: CSE,IT,ECE
+                        </small>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Placeholder
+                        </label>
+
+                        {{ form.placeholder }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Help Text
+                        </label>
+
+                        {{ form.help_text }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Auto-fill From Profile
+                        </label>
+
+                        {{ form.prefill_source }}
+
+                        <small class="text-muted">
+                            Example: ug_cgpa, pg_cgpa, phone, resume
+                        </small>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Display Order
+                        </label>
+
+                        {{ form.order }}
+
+                    </div>
+
+
+                    <div class="form-check mb-3">
+
+                        {{ form.required }}
+
+                        <label class="form-check-label">
+                            Required Field
+                        </label>
+
+                    </div>
+
+
+                    {% if form.errors %}
+
+                        <div class="alert alert-danger">
+
+                            <strong>
+                                Please correct the form errors.
+                            </strong>
+
+                            {{ form.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                    >
+                        Add Field
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-7">
+
+            <div class="card-box">
+
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-3
+                    "
+                >
+
+                    <h4 class="mb-0">
+                        Application Fields
+                    </h4>
+
+                    <span class="badge bg-primary">
+                        {{ custom_fields|length }} Fields
+                    </span>
+
+                </div>
+
+
+                {% for field in custom_fields %}
+
+                    <div class="field-item">
+
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-start
+                            "
+                        >
+
+                            <div>
+
+                                <h6 class="mb-1">
+                                    {{ field.label }}
+                                </h6>
+
+
+                                <div class="text-muted small">
+                                    {{ field.field_name }}
+                                    ·
+                                    {{ field.get_field_type_display }}
+                                </div>
+
+
+                                {% if field.prefill_source %}
+
+                                    <div class="text-muted small mt-1">
+                                        Auto-fill:
+                                        {{ field.prefill_source }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                {% if field.options %}
+
+                                    <div class="text-muted small mt-1">
+                                        Options:
+                                        {{ field.options }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                <div class="text-muted small mt-1">
+                                    Display Order:
+                                    {{ field.order }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="d-flex gap-2 align-items-center">
+
+                                {% if field.required %}
+
+                                    <span class="badge badge-required">
+                                        Required
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        Optional
+                                    </span>
+
+                                {% endif %}
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'delete_job_field' field.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this application field?');"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                {% empty %}
+
+                    <div class="text-center text-muted py-5">
+
+                        No custom application fields added yet.
+
+                    </div>
+
+                {% endfor %}
+
+
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        mt-4
+                    "
+                >
+
+                    <a
+                        href="{% url 'create_job' %}"
+                        class="btn btn-outline-secondary"
+                    >
+                        Create Another Job
+                    </a>
+
+                    <a
+                        href="{% url 'job_list' %}"
+                        class="btn btn-success"
+                    >
+                        Finish Setup
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

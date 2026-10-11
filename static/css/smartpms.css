@@ -1,0 +1,210 @@
+body {
+    margin: 0;
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+    color: #212529;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: #10233f;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 25px 18px;
+    z-index: 1000;
+}
+
+.brand {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 35px;
+}
+
+.sidebar a {
+    display: block;
+    color: #dce6f5;
+    text-decoration: none;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: 0.2s ease;
+}
+
+.sidebar a:hover,
+.sidebar .active {
+    background: #0d6efd;
+    color: white;
+}
+
+/* MAIN CONTENT */
+.main {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+/* TOPBAR */
+.topbar {
+    background: white;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+/* CARDS */
+.card-box,
+.job-card,
+.interview-card,
+.notification-card,
+.application-card,
+.stat-card,
+.placed-box,
+.empty-box {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.card-box,
+.job-card,
+.interview-card,
+.notification-card,
+.application-card,
+.stat-card,
+.placed-box {
+    padding: 22px;
+}
+
+.metric,
+.stat-number {
+    font-size: 30px;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+/* TABLES */
+.table thead th {
+    background: #f8f9fa;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+/* BUTTONS */
+.btn {
+    border-radius: 8px;
+}
+
+.btn-primary {
+    font-weight: 600;
+}
+
+.btn-sm {
+    border-radius: 7px;
+}
+
+/* STATUS */
+.status-badge,
+.badge-status,
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-applied {
+    background: #e7f1ff;
+    color: #0d6efd;
+}
+
+.status-shortlisted {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-interview {
+    background: #cff4fc;
+    color: #055160;
+}
+
+.status-selected,
+.eligible {
+    background: #d1fae5;
+    color: #067647;
+}
+
+.status-rejected,
+.not-eligible {
+    background: #fde2e2;
+    color: #b42318;
+}
+
+/* FORMS */
+.form-label {
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+}
+
+textarea.form-control {
+    min-height: 120px;
+}
+
+/* PROGRESS */
+.progress {
+    height: 7px;
+    border-radius: 20px;
+}
+
+/* EMPTY STATE */
+.empty-box {
+    padding: 45px;
+    text-align: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .sidebar {
+        width: 190px;
+    }
+
+    .main {
+        margin-left: 190px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .sidebar a {
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 8px;
+    }
+
+    .topbar {
+        padding: 16px;
+    }
+}

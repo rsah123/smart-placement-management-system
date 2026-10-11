@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Job Drive | SmartPMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: #10233f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 18px;
+        }
+
+        .brand {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #dce6f5;
+            text-decoration: none;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar .active {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .card-box {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                margin-left: 190px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+<div class="sidebar">
+
+    <div class="brand">
+        🎓 SmartPMS Admin
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}">
+        Dashboard
+    </a>
+
+    <a
+        href="{% url 'job_list' %}"
+        class="active"
+    >
+        Job Drives
+    </a>
+
+    <a href="{% url 'manage_applications' %}">
+        Applications
+    </a>
+
+    <a href="/admin/">
+        Django Admin
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+
+
+<div class="main">
+
+    <div class="topbar">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h3 class="mb-1">
+                    Create Job Drive
+                </h3>
+
+                <div class="text-muted">
+                    Add company requirements and eligibility criteria.
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'job_list' %}"
+                class="btn btn-outline-secondary"
+            >
+                Back to Job Drives
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-box">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="row g-3">
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Company
+                    </label>
+
+                    {{ form.company }}
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Job Title
+                    </label>
+
+                    {{ form.title }}
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    {{ form.description }}
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Location
+                    </label>
+
+                    {{ form.location }}
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Job Type
+                    </label>
+
+                    {{ form.job_type }}
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        CTC (LPA)
+                    </label>
+
+                    {{ form.ctc }}
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Minimum CGPA
+                    </label>
+
+                    {{ form.min_cgpa }}
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Maximum Backlogs
+                    </label>
+
+                    {{ form.max_backlogs }}
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Eligible Branches
+                    </label>
+
+                    {{ form.eligible_branches }}
+
+                    <small class="text-muted">
+                        Example: CSE,IT,ECE
+                    </small>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Graduation Year
+                    </label>
+
+                    {{ form.graduation_year }}
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Application Deadline
+                    </label>
+
+                    {{ form.deadline }}
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    {{ form.status }}
+
+                </div>
+
+            </div>
+
+
+            {% if form.errors %}
+
+                <div class="alert alert-danger mt-4">
+
+                    <strong>
+                        Please correct the following errors:
+                    </strong>
+
+                    {{ form.errors }}
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="text-end mt-4">
+
+                <a
+                    href="{% url 'job_list' %}"
+                    class="btn btn-outline-secondary me-2"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary px-4"
+                >
+                    Save & Build Application Form
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

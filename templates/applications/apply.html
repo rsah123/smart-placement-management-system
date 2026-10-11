@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Apply | SmartPMS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: #10233f;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 25px 18px;
+        }
+
+        .brand {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #dce6f5;
+            text-decoration: none;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 32px;
+        }
+
+        .header-card,
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+
+        .header-card {
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-card {
+            padding: 30px;
+            max-width: 950px;
+        }
+
+        .company-name {
+            color: #0d6efd;
+            font-weight: 700;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+            border-radius: 9px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+        }
+
+        .info-badge {
+            background: #e8f1ff;
+            color: #0d6efd;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .required-star {
+            color: #dc3545;
+        }
+
+        .error-text {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="brand">
+        🎓 SmartPMS
+    </div>
+
+    <a href="{% url 'student_dashboard' %}">
+        Dashboard
+    </a>
+
+    <a href="{% url 'student_profile' %}">
+        My Profile
+    </a>
+
+    <a href="#">
+        Job Drives
+    </a>
+
+    <a href="{% url 'my_applications' %}">
+        Applications
+    </a>
+
+    <a href="#">
+        Interviews
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+
+<div class="main">
+
+    <div class="header-card">
+
+        <div class="d-flex justify-content-between align-items-start">
+
+            <div>
+
+                <div class="company-name">
+                    {{ job.company.name }}
+                </div>
+
+                <h2 class="mt-1 mb-2">
+                    {{ job.title }}
+                </h2>
+
+                <div class="text-muted">
+                    {{ job.location }}
+                    ·
+                    {{ job.get_job_type_display }}
+                    ·
+                    {{ job.ctc }} LPA
+                </div>
+
+            </div>
+
+            <span class="info-badge">
+                Deadline: {{ job.deadline }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <h4>
+            Application Form
+        </h4>
+
+        <p class="text-muted mb-4">
+            Review the auto-filled information and submit your application.
+        </p>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            {% for field in fields %}
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        {{ field.label }}
+
+                        {% if field.required %}
+                            <span class="required-star">*</span>
+                        {% endif %}
+
+                    </label>
+
+
+                    {% if field.field_type == "textarea" %}
+
+                        <textarea
+                            name="{{ field.field_name }}"
+                            class="form-control"
+                            placeholder="{{ field.placeholder }}"
+                        >{% if field.prefill_source == "skills" %}{{ student.skills }}{% endif %}</textarea>
+
+
+                    {% elif field.field_type == "select" %}
+
+                        <select
+                            name="{{ field.field_name }}"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select an option
+                            </option>
+
+                            {% comment %}
+                            Options rendering will be enhanced later.
+                            {% endcomment %}
+
+                        </select>
+
+
+                    {% elif field.field_type == "boolean" %}
+
+                        <div class="form-check">
+
+                            <input
+                                type="checkbox"
+                                name="{{ field.field_name }}"
+                                class="form-check-input"
+                                id="field_{{ field.id }}"
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="field_{{ field.id }}"
+                            >
+                                Yes
+                            </label>
+
+                        </div>
+
+
+                    {% elif field.field_type == "file" %}
+
+                        {% if field.prefill_source == "resume" and student.resume %}
+
+                            <div class="alert alert-light border mb-2">
+
+                                Existing profile resume:
+
+                                <a
+                                    href="{{ student.resume.url }}"
+                                    target="_blank"
+                                >
+                                    View Resume
+                                </a>
+
+                            </div>
+
+                        {% endif %}
+
+                        <input
+                            type="file"
+                            name="{{ field.field_name }}"
+                            class="form-control"
+                        >
+
+
+                    {% else %}
+
+                        <input
+                            type="{% if field.field_type == 'number' %}number{% elif field.field_type == 'email' %}email{% elif field.field_type == 'date' %}date{% else %}text{% endif %}"
+                            name="{{ field.field_name }}"
+                            class="form-control"
+
+                            {% if field.field_type == "number" %}
+                                step="0.01"
+                            {% endif %}
+
+                            placeholder="{{ field.placeholder }}"
+
+                            value="{% if field.prefill_source == 'tenth_percentage' %}{{ student.tenth_percentage|default_if_none:'' }}{% elif field.prefill_source == 'twelfth_percentage' %}{{ student.twelfth_percentage|default_if_none:'' }}{% elif field.prefill_source == 'ug_cgpa' %}{{ student.ug_cgpa|default_if_none:'' }}{% elif field.prefill_source == 'pg_cgpa' %}{{ student.pg_cgpa|default_if_none:'' }}{% elif field.prefill_source == 'phone' %}{{ student.phone }}{% elif field.prefill_source == 'roll_number' %}{{ student.roll_number }}{% elif field.prefill_source == 'cgpa' %}{{ student.cgpa }}{% endif %}"
+                        >
+
+                    {% endif %}
+
+
+                    {% if field.help_text %}
+
+                        <div class="form-text">
+                            {{ field.help_text }}
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if field.field_name in errors %}
+
+                        <div class="error-text">
+                            This required field must be completed.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% empty %}
+
+                <div class="alert alert-warning">
+                    No company-specific fields were configured for this job.
+                </div>
+
+            {% endfor %}
+
+
+            <div class="d-flex justify-content-between mt-4">
+
+                <a
+                    href="{% url 'student_dashboard' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary px-5"
+                >
+                    Submit Application
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

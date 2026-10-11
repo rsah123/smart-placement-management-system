@@ -1,0 +1,314 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Applications | SmartPMS</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- SmartPMS Common CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/smartpms.css' %}"
+    >
+
+    <!-- Applications page specific CSS -->
+    <style>
+
+        .application-card {
+            overflow: hidden;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .empty-box h5 {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <div class="brand">
+        🎓 SmartPMS
+    </div>
+
+    <a href="{% url 'student_dashboard' %}">
+        Dashboard
+    </a>
+
+    <a href="{% url 'student_profile' %}">
+        My Profile
+    </a>
+
+    <a href="{% url 'student_job_drives' %}">
+        Job Drives
+    </a>
+
+    <a
+        href="{% url 'my_applications' %}"
+        class="active"
+    >
+        Applications
+    </a>
+
+    <a href="{% url 'student_interviews' %}">
+        Interviews
+    </a>
+
+    <a href="{% url 'student_notifications' %}">
+        Notifications
+    </a>
+
+    <a href="{% url 'placement_stats' %}">
+        Placement Stats
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+
+    <div class="topbar">
+
+        <h3 class="mb-1">
+            My Applications
+        </h3>
+
+        <div class="text-muted">
+            Track your placement applications and current status.
+        </div>
+
+    </div>
+
+
+    {% if applications %}
+
+
+        <div class="application-card">
+
+
+            <div class="table-responsive">
+
+
+                <table class="table align-middle mb-0">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Company
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                            <th>
+                                CTC
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Applied On
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for application in applications %}
+
+
+                            <tr>
+
+
+                                <td>
+
+                                    <strong>
+                                        {{ application.job.company.name }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+                                    {{ application.job.title }}
+                                </td>
+
+
+                                <td>
+                                    {{ application.job.ctc }} LPA
+                                </td>
+
+
+                                <td>
+
+
+                                    {% if application.status == "applied" %}
+
+                                        <span class="status-badge status-applied">
+                                            Applied
+                                        </span>
+
+
+                                    {% elif application.status == "shortlisted" %}
+
+                                        <span class="status-badge status-shortlisted">
+                                            Shortlisted
+                                        </span>
+
+
+                                    {% elif application.status == "interview" %}
+
+                                        <span class="status-badge status-interview">
+                                            Interview
+                                        </span>
+
+
+                                    {% elif application.status == "selected" %}
+
+                                        <span class="status-badge status-selected">
+                                            Selected
+                                        </span>
+
+
+                                    {% elif application.status == "rejected" %}
+
+                                        <span class="status-badge status-rejected">
+                                            Rejected
+                                        </span>
+
+
+                                    {% else %}
+
+                                        <span class="status-badge status-applied">
+                                            {{ application.get_status_display }}
+                                        </span>
+
+
+                                    {% endif %}
+
+
+                                </td>
+
+
+                                <td>
+                                    {{ application.applied_at|date:"d M Y" }}
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'application_detail' application.id %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        View
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="empty-box">
+
+
+            <h5>
+                No Applications Yet
+            </h5>
+
+
+            <p class="text-muted">
+                You have not applied to any job drive yet.
+            </p>
+
+
+            <a
+                href="{% url 'student_job_drives' %}"
+                class="btn btn-primary"
+            >
+                Browse Job Drives
+            </a>
+
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,747 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Student Dashboard | SmartPMS</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- SmartPMS Common CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/smartpms.css' %}"
+    >
+
+    <!-- Dashboard specific styles -->
+    <style>
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-box {
+            height: 100%;
+        }
+
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        .progress {
+            margin-top: 10px;
+            margin-bottom: 6px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- ======================================== -->
+<!-- SIDEBAR -->
+<!-- ======================================== -->
+
+<div class="sidebar">
+
+    <div class="brand">
+        🎓 SmartPMS
+    </div>
+
+
+    <a
+        href="{% url 'student_dashboard' %}"
+        class="active"
+    >
+        Dashboard
+    </a>
+
+
+    <a href="{% url 'student_profile' %}">
+        My Profile
+    </a>
+
+
+    <a href="{% url 'student_job_drives' %}">
+        Job Drives
+    </a>
+
+
+    <a href="{% url 'my_applications' %}">
+        Applications
+    </a>
+
+
+    <a href="{% url 'student_interviews' %}">
+        Interviews
+    </a>
+
+
+    <a href="{% url 'student_notifications' %}">
+        Notifications
+    </a>
+
+
+    <a href="{% url 'placement_stats' %}">
+        Placement Stats
+    </a>
+
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+
+
+<!-- ======================================== -->
+<!-- MAIN CONTENT -->
+<!-- ======================================== -->
+
+<div class="main">
+
+
+    <!-- ==================================== -->
+    <!-- DJANGO MESSAGES -->
+    <!-- ==================================== -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div
+                class="
+                    alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% elif message.tags == 'warning' %}
+                        alert-warning
+                    {% elif message.tags == 'success' %}
+                        alert-success
+                    {% else %}
+                        alert-info
+                    {% endif %}
+                "
+            >
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ==================================== -->
+    <!-- TOPBAR -->
+    <!-- ==================================== -->
+
+    <div class="topbar mb-4">
+
+        <div>
+
+            <h4 class="mb-1">
+
+                Hello,
+
+                {{ request.user.first_name|default:request.user.username }}
+
+                👋
+
+            </h4>
+
+            <small class="text-muted">
+                Here is your placement overview.
+            </small>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ request.user.username }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================== -->
+    <!-- DASHBOARD METRICS -->
+    <!-- ==================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- PROFILE COMPLETION -->
+
+        <div class="col-md-3">
+
+            <div class="card-box">
+
+                <div class="text-muted">
+                    Profile Completion
+                </div>
+
+                <div class="metric">
+                    {{ profile_completion }}%
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: {{ profile_completion }}%;"
+                    >
+                    </div>
+
+                </div>
+
+
+                {% if profile_completion == 100 %}
+
+                    <small class="text-success">
+                        Profile completed
+                    </small>
+
+                {% else %}
+
+                    <small>
+                        Complete your profile
+                    </small>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ELIGIBLE JOBS -->
+
+        <div class="col-md-3">
+
+            <div class="card-box">
+
+                <div class="text-muted">
+                    Eligible Job Drives
+                </div>
+
+                <div class="metric">
+                    {{ eligible_jobs_count }}
+                </div>
+
+                <small>
+                    Based on your academic profile
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <div class="col-md-3">
+
+            <div class="card-box">
+
+                <div class="text-muted">
+                    Applications
+                </div>
+
+                <div class="metric">
+                    {{ applications_count }}
+                </div>
+
+                <small>
+                    Track your applications
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- INTERVIEWS -->
+
+        <div class="col-md-3">
+
+            <div class="card-box">
+
+                <div class="text-muted">
+                    Interviews
+                </div>
+
+                <div class="metric">
+                    {{ interviews_count }}
+                </div>
+
+                <small>
+                    Upcoming interviews
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================== -->
+    <!-- JOBS + NOTIFICATIONS -->
+    <!-- ==================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- JOB DRIVES -->
+
+        <div class="col-lg-8">
+
+            <div class="card-box">
+
+
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-3
+                    "
+                >
+
+                    <h5 class="section-title mb-0">
+                        Latest Eligible Job Drives
+                    </h5>
+
+                    <span class="badge bg-primary">
+
+                        {{ eligible_jobs_count }}
+                        Eligible
+
+                    </span>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Company
+                                </th>
+
+                                <th>
+                                    Role
+                                </th>
+
+                                <th>
+                                    Eligibility
+                                </th>
+
+                                <th>
+                                    CTC
+                                </th>
+
+                                <th>
+                                    Deadline
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for job in eligible_jobs %}
+
+                                <tr>
+
+
+                                    <!-- COMPANY -->
+
+                                    <td>
+
+                                        <strong>
+                                            {{ job.company.name }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- ROLE -->
+
+                                    <td>
+                                        {{ job.title }}
+                                    </td>
+
+
+                                    <!-- ELIGIBILITY -->
+
+                                    <td>
+
+                                        <span class="status eligible">
+                                            Eligible
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- CTC -->
+
+                                    <td>
+                                        {{ job.ctc }} LPA
+                                    </td>
+
+
+                                    <!-- DEADLINE -->
+
+                                    <td>
+                                        {{ job.deadline|date:"d M Y" }}
+                                    </td>
+
+
+                                    <!-- ACTION -->
+
+                                    <td>
+
+
+                                        {% if job.current_application %}
+
+
+                                            <div
+                                                class="
+                                                    d-flex
+                                                    align-items-center
+                                                    gap-2
+                                                "
+                                            >
+
+
+                                                <span class="badge bg-success">
+                                                    Applied ✓
+                                                </span>
+
+
+                                                <a
+                                                    href="{% url 'application_detail' job.current_application.id %}"
+                                                    class="
+                                                        btn
+                                                        btn-outline-primary
+                                                        btn-sm
+                                                    "
+                                                >
+                                                    View Application
+                                                </a>
+
+
+                                            </div>
+
+
+                                        {% else %}
+
+
+                                            <a
+                                                href="{% url 'apply_job' job.id %}"
+                                                class="
+                                                    btn
+                                                    btn-primary
+                                                    btn-sm
+                                                "
+                                            >
+                                                Apply
+                                            </a>
+
+
+                                        {% endif %}
+
+
+                                    </td>
+
+
+                                </tr>
+
+
+                            {% empty %}
+
+
+                                <tr>
+
+                                    <td
+                                        colspan="6"
+                                        class="
+                                            text-center
+                                            text-muted
+                                            py-4
+                                        "
+                                    >
+
+                                        No eligible job drives available.
+
+                                    </td>
+
+                                </tr>
+
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- NOTIFICATIONS -->
+        <!-- ================================= -->
+
+        <div class="col-lg-4">
+
+            <div class="card-box">
+
+
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-3
+                    "
+                >
+
+                    <h5 class="section-title mb-0">
+                        Notifications
+                    </h5>
+
+
+                    <a
+                        href="{% url 'student_notifications' %}"
+                        class="btn btn-outline-primary btn-sm"
+                    >
+                        View All
+                    </a>
+
+                </div>
+
+
+                {% for notification in notifications %}
+
+
+                    <div class="mb-3">
+
+                        <strong>
+                            {{ notification.title }}
+                        </strong>
+
+
+                        <div class="text-muted small mt-1">
+
+                            {{ notification.message }}
+
+                        </div>
+
+
+                        <div class="text-muted small">
+
+                            {{ notification.created_at|timesince }}
+
+                            ago
+
+                        </div>
+
+                    </div>
+
+
+                    {% if not forloop.last %}
+
+                        <hr>
+
+                    {% endif %}
+
+
+                {% empty %}
+
+
+                    <p class="text-muted">
+
+                        No notifications available.
+
+                    </p>
+
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================== -->
+    <!-- QUICK ACTIONS -->
+    <!-- ==================================== -->
+
+    <div class="row g-4 mt-1">
+
+
+        <!-- PROFILE -->
+
+        <div class="col-md-4">
+
+            <div class="card-box">
+
+                <h6>
+                    Complete Your Profile
+                </h6>
+
+
+                <p class="text-muted small">
+
+                    Keep academic and placement
+                    information updated.
+
+                </p>
+
+
+                <a
+                    href="{% url 'student_profile' %}"
+                    class="
+                        btn
+                        btn-outline-primary
+                        btn-sm
+                    "
+                >
+                    Edit Profile
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <div class="col-md-4">
+
+            <div class="card-box">
+
+                <h6>
+                    My Applications
+                </h6>
+
+
+                <p class="text-muted small">
+
+                    Check application and selection
+                    status.
+
+                </p>
+
+
+                <a
+                    href="{% url 'my_applications' %}"
+                    class="
+                        btn
+                        btn-outline-primary
+                        btn-sm
+                    "
+                >
+                    View Applications
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- PLACEMENT STATUS -->
+
+        <div class="col-md-4">
+
+            <div class="card-box">
+
+                <h6>
+                    Placement Status
+                </h6>
+
+
+                {% if student and student.is_placed %}
+
+                    <p class="text-success fw-bold mb-3">
+                        Selected / Placed
+                    </p>
+
+                {% else %}
+
+                    <p class="text-muted mb-3">
+                        Not placed yet
+                    </p>
+
+                {% endif %}
+
+
+                <a
+                    href="{% url 'placement_stats' %}"
+                    class="
+                        btn
+                        btn-outline-primary
+                        btn-sm
+                    "
+                >
+                    View Placement Stats
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
